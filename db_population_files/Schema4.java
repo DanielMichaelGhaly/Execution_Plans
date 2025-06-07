@@ -471,6 +471,12 @@ public class Schema4 {
 
 	public static void main(String[] argv) {
 
+		hostname = "localhost";
+		port_Number = 5432;
+		db_Name = "schema4";
+		username = "postgres";
+		password = "usersql3";
+
 		System.out.println("-------- PostgreSQL " + "JDBC Connection Testing ------------");
 
 		try {
@@ -490,7 +496,7 @@ public class Schema4 {
 		Connection connection = null;
 
 		try {
-			connection = DriverManager.getConnection("jdbc:postgresql://hostname:port/dbname", "username ", "password");
+			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname ":" + port_Number + "/" + db_Name, username, password);
 			insertSchema4(connection);
 
 		} catch (SQLException e) {
