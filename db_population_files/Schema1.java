@@ -18,7 +18,6 @@ public class Schema1 {
 	// ///////////////////////////////////////////////////////////////
 	public static long insertDepartment(int building, String deptName, int budget, Connection conn) {
 		String SQL = "INSERT INTO department(dep_name,building,budget) " + "VALUES(?,?,?);";
-
 		long id = 0;
 		try {
 			conn.setAutoCommit(false);
@@ -549,7 +548,6 @@ public class Schema1 {
 		try {
 			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname ":" + port_Number + "/" + db_Name, username, password);
 			insertSchema1(connection);
-
 		} catch (SQLException e) {
 
 			System.out.println("Connection Failed! Check output console");
