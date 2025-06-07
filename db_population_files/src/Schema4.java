@@ -9,11 +9,11 @@ import java.sql.Statement;
 public class Schema4 {
 //	CREATE TABLE Movie(mov_id INT PRIMARY KEY, mov_title CHAR(50), mov_year INT, mov_time INT, mov_lang CHAR(50), mov_dt_rel date, mov_rel_country CHAR(5));
 
-	String hostname;
-	int port_Number;
-	String db_Name;
-	String username;
-	String password;
+	private static String hostname;
+	private static int port_Number;
+	private static String db_Name;
+	private static String username;
+	private static String password;
 
 	public static long insertMovie(int ID, String title, int year, int time, String lang, Date releaseDate,
 			String movieCountry, Connection conn) {
@@ -496,7 +496,7 @@ public class Schema4 {
 		Connection connection = null;
 
 		try {
-			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname ":" + port_Number + "/" + db_Name, username, password);
+			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname + ":" + port_Number + "/" + db_Name, username, password);
 			insertSchema4(connection);
 
 		} catch (SQLException e) {

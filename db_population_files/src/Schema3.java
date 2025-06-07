@@ -10,11 +10,11 @@ public class Schema3 {
 
 //	CREATE TABLE Sailors(sid INT PRIMARY KEY, sname CHAR(20), rating INT, age REAL);
 
-	String hostname;
-	int port_Number;
-	String db_Name;
-	String username;
-	String password;
+	private static String hostname;
+	private static int port_Number;
+	private static String db_Name;
+	private static String username;
+	private static String password;
 
 	public static long insertSailor(int ID, String Name, int rating, double age, Connection conn) {
 		String SQL = "INSERT INTO Sailors(sid,sname,rating,age) " + "VALUES(?,?,?,?);";
@@ -194,7 +194,7 @@ public class Schema3 {
 		Connection connection = null;
 
 		try {
-			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname ":" + port_Number + "/" + db_Name, username, password);
+			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname + ":" + port_Number + "/" + db_Name, username, password);
 			insertSchema3(connection);
 
 		} catch (SQLException e) {

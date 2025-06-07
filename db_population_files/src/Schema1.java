@@ -8,11 +8,11 @@ import java.sql.Time;
 
 public class Schema1 {
 
-	String hostname;
-	int port_Number;
-	String db_Name;
-	String username;
-	String password;
+	private static String hostname;
+	private static int port_Number;
+	private static String db_Name;
+	private static String username;
+	private static String password;
 
 	// //////////////////////////////////////////// Table Insertion Methods
 	// ///////////////////////////////////////////////////////////////
@@ -520,7 +520,7 @@ public class Schema1 {
 		populateSectionTime(connection);
 	}
 
-	public static void main(String[] argv) {
+	public static void main(String[] args) {
 
 		hostname = "localhost";
 		port_Number = 5432;
@@ -546,7 +546,7 @@ public class Schema1 {
 
 		Connection connection = null;
 		try {
-			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname ":" + port_Number + "/" + db_Name, username, password);
+			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname + ":" + port_Number + "/" + db_Name, username, password);
 			insertSchema1(connection);
 		} catch (SQLException e) {
 

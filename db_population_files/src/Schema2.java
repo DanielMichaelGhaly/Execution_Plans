@@ -10,11 +10,11 @@ public class Schema2 {
 
 //	CREATE TABLE Employee(Fname CHAR(20), Minit CHAR(10), Lname CHAR(20), ssn INT PRIMARY KEY, Bdate date, address CHAR(20), sex CHARACTER(1), salary INT, Super_snn INT REFERENCES Employee(ssn), dno INT);
 
-	String hostname;
-	int port_Number;
-	String db_Name;
-	String username;
-	String password;
+	private static String hostname;
+	private static int port_Number;
+	private static String db_Name;
+	private static String username;
+	private static String password;
 	public static long insertEmployee(String Fname, String Minit, String Lname, int ssn, Date Bdate, String address,
 			String sex, int salary, int superSSN, int dno, Connection conn) {
 		String SQL = "INSERT INTO Employee(Fname,Minit,Lname,ssn,Bdate,address,sex,salary,Super_snn,dno) "
@@ -364,7 +364,7 @@ public class Schema2 {
 		Connection connection = null;
 
 		try {
-			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname ":" + port_Number + "/" + db_Name, username, password);
+			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname + ":" + port_Number + "/" + db_Name, username, password);
 			insertSchema2(connection);
 
 		} catch (SQLException e) {
