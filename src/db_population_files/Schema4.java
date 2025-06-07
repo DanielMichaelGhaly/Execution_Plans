@@ -1,12 +1,15 @@
+package db_population_files;
+
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
 
-public class Schema1 {
+public class Schema4 {
+//	CREATE TABLE Movie(mov_id INT PRIMARY KEY, mov_title CHAR(50), mov_year INT, mov_time INT, mov_lang CHAR(50), mov_dt_rel date, mov_rel_country CHAR(5));
 
 	private static String hostname;
 	private static int port_Number;
@@ -14,275 +17,9 @@ public class Schema1 {
 	private static String username;
 	private static String password;
 
-	// //////////////////////////////////////////// Table Insertion Methods
-	// ///////////////////////////////////////////////////////////////
-	public static long insertDepartment(int building, String deptName, int budget, Connection conn) {
-		String SQL = "INSERT INTO department(dep_name,building,budget) " + "VALUES(?,?,?);";
-		long id = 0;
-		try {
-			conn.setAutoCommit(false);
-			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
-
-			pstmt.setInt(2, building);
-			pstmt.setString(1, deptName);
-			pstmt.setInt(3, budget);
-
-			int affectedRows = pstmt.executeUpdate();
-			System.out.println("Number of affected rows is " + affectedRows);
-			// check the affected rows
-			if (affectedRows > 0) {
-				// get the ID back
-				try (ResultSet rs = pstmt.getGeneratedKeys()) {
-					// System.out.println(rs.next());
-					if (rs.next()) {
-						id = rs.getLong(2);
-						pstmt.close();
-						conn.commit();
-					}
-				} catch (SQLException ex) {
-					ex.printStackTrace();
-					System.out.println(ex.getMessage());
-				}
-			}
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
-		}
-		return id;
-	}
-
-	public static long insertInstructor(int ID, String name, int salary, String deptName, Connection conn) {
-		String SQL = "INSERT INTO instructor(ID,name,salary,dep_name)" + "VALUES(?,?,?,?);";
-
-		long id = 0;
-		try {
-			conn.setAutoCommit(false);
-			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
-
-			pstmt.setString(2, name);
-			pstmt.setInt(1, ID);
-			pstmt.setInt(3, salary);
-			pstmt.setString(4, deptName);
-
-			int affectedRows = pstmt.executeUpdate();
-			System.out.println("Number of affected rows is " + affectedRows);
-			// check the affected rows
-			if (affectedRows > 0) {
-				// get the ID back
-				try (ResultSet rs = pstmt.getGeneratedKeys()) {
-					// System.out.println(rs.next());
-					if (rs.next()) {
-						id = rs.getLong(1);
-						pstmt.close();
-						conn.commit();
-					}
-				} catch (SQLException ex) {
-					ex.printStackTrace();
-					System.out.println(ex.getMessage());
-				}
-			}
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
-		}
-		return id;
-	}
-
-	public static long insertClassroom(int building, int roomNo, int capacity, Connection conn) {
-		String SQL = "INSERT INTO classroom(building,room_number,capacity)" + "VALUES(?,?,?);";
-
-		long id = 0;
-		try {
-			conn.setAutoCommit(false);
-			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
-
-			pstmt.setInt(2, roomNo);
-			pstmt.setInt(1, building);
-			pstmt.setInt(3, capacity);
-
-			int affectedRows = pstmt.executeUpdate();
-			System.out.println("Number of affected rows is " + affectedRows);
-			// check the affected rows
-			if (affectedRows > 0) {
-				// get the ID back
-				try (ResultSet rs = pstmt.getGeneratedKeys()) {
-					// System.out.println(rs.next());
-					if (rs.next()) {
-						id = rs.getLong(1);
-						pstmt.close();
-						conn.commit();
-					}
-				} catch (SQLException ex) {
-					ex.printStackTrace();
-					System.out.println(ex.getMessage());
-				}
-			}
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
-		}
-		return id;
-	}
-
-	public static long insertTimeSlot(int ID, String day, Time start, Time end, Connection conn) {
-		String SQL = "INSERT INTO time_slot(id,day,start,end_time)" + "VALUES(?,?,?,?);";
-
-		long id = 0;
-		try {
-			conn.setAutoCommit(false);
-			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
-
-			pstmt.setString(2, day);
-			pstmt.setInt(1, ID);
-			pstmt.setTime(3, start);
-			pstmt.setTime(4, end);
-
-			int affectedRows = pstmt.executeUpdate();
-			System.out.println("Number of affected rows is " + affectedRows);
-			// check the affected rows
-			if (affectedRows > 0) {
-				// get the ID back
-				try (ResultSet rs = pstmt.getGeneratedKeys()) {
-					// System.out.println(rs.next());
-					if (rs.next()) {
-						id = rs.getLong(1);
-						pstmt.close();
-						conn.commit();
-					}
-				} catch (SQLException ex) {
-					ex.printStackTrace();
-					System.out.println(ex.getMessage());
-				}
-			}
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
-		}
-		return id;
-	}
-
-	public static long insertStudent(int ID, String name, int credit, String deptName, int instID, Connection conn) {
-		String SQL = "INSERT INTO student(id,name,tot_credit,department,advisor_id)" + "VALUES(?,?,?,?,?);";
-
-		long id = 0;
-		try {
-			conn.setAutoCommit(false);
-			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
-
-			pstmt.setString(2, name);
-			pstmt.setInt(1, ID);
-			pstmt.setInt(3, credit);
-			pstmt.setString(4, deptName);
-			pstmt.setInt(5, instID);
-
-			int affectedRows = pstmt.executeUpdate();
-			System.out.println("Number of affected rows is " + affectedRows);
-			// check the affected rows
-			if (affectedRows > 0) {
-				// get the ID back
-				try (ResultSet rs = pstmt.getGeneratedKeys()) {
-					// System.out.println(rs.next());
-					if (rs.next()) {
-						id = rs.getLong(1);
-						pstmt.close();
-						conn.commit();
-					}
-				} catch (SQLException ex) {
-					ex.printStackTrace();
-					System.out.println(ex.getMessage());
-				}
-			}
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
-		}
-		return id;
-	}
-
-	// CREATE TABLE course(course_id INT PRIMARY KEY, title VARCHAR(20), credits
-	// INT, department VARCHAR(20) REFERENCES department);
-	public static long insertCourse(int ID, String title, int credit, String deptName, Connection conn) {
-		String SQL = "INSERT INTO course(course_id,title,credits,department)" + "VALUES(?,?,?,?);";
-
-		long id = 0;
-		try {
-			conn.setAutoCommit(false);
-			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
-
-			pstmt.setString(2, title);
-			pstmt.setInt(1, ID);
-			pstmt.setInt(3, credit);
-			pstmt.setString(4, deptName);
-
-			int affectedRows = pstmt.executeUpdate();
-			System.out.println("Number of affected rows is " + affectedRows);
-			// check the affected rows
-			if (affectedRows > 0) {
-				// get the ID back
-				try (ResultSet rs = pstmt.getGeneratedKeys()) {
-					// System.out.println(rs.next());
-					if (rs.next()) {
-						id = rs.getLong(1);
-						pstmt.close();
-						conn.commit();
-					}
-				} catch (SQLException ex) {
-					ex.printStackTrace();
-					System.out.println(ex.getMessage());
-				}
-			}
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
-		}
-		return id;
-	}
-
-	// CREATE TABLE pre_requiste(course_id INT, prereq_id INT,PRIMARY
-	// KEY(course_id, prereq_id));
-	public static long insertPrerequiste(int ID, int preID, Connection conn) {
-		String SQL = "INSERT INTO pre_requiste(course_id,prereq_id)" + "VALUES(?,?);";
-
-		long id = 0;
-		try {
-			conn.setAutoCommit(false);
-			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
-
-			pstmt.setInt(2, preID);
-			pstmt.setInt(1, ID);
-
-			int affectedRows = pstmt.executeUpdate();
-			System.out.println("Number of affected rows is " + affectedRows);
-			// check the affected rows
-			if (affectedRows > 0) {
-				// get the ID back
-				try (ResultSet rs = pstmt.getGeneratedKeys()) {
-					// System.out.println(rs.next());
-					if (rs.next()) {
-						id = rs.getLong(1);
-						pstmt.close();
-						conn.commit();
-					}
-				} catch (SQLException ex) {
-					ex.printStackTrace();
-					System.out.println(ex.getMessage());
-				}
-			}
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
-		}
-		return id;
-	}
-
-	// CREATE TABLE section(section_id INT PRIMARY KEY, semester INT, year INT,
-	// instructor_id INT REFERENCES instructor, course_id INT REFERENCES
-	// course,classroom_building INT REFERENCES classroom(building),
-	// classroom_room_no INT REFERENCES classroom(room_number));
-
-	public static long insertSection(int ID, int semester, int year, int instID, int courseID, int classroomBuilding,
-			int classroomRoomNo, Connection conn) {
-		String SQL = "INSERT INTO section(section_id,semester,year,instructor_id,course_id,classroom_building,classroom_room_no)"
+	public static long insertMovie(int ID, String title, int year, int time, String lang, Date releaseDate,
+			String movieCountry, Connection conn) {
+		String SQL = "INSERT INTO Movie(mov_id,mov_title,mov_year,mov_time,mov_lang,mov_dt_rel,mov_rel_country) "
 				+ "VALUES(?,?,?,?,?,?,?);";
 
 		long id = 0;
@@ -290,13 +27,13 @@ public class Schema1 {
 			conn.setAutoCommit(false);
 			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
 
-			pstmt.setInt(2, semester);
 			pstmt.setInt(1, ID);
+			pstmt.setString(2, title);
 			pstmt.setInt(3, year);
-			pstmt.setInt(4, instID);
-			pstmt.setInt(5, courseID);
-			pstmt.setInt(6, classroomBuilding);
-			pstmt.setInt(7, classroomRoomNo);
+			pstmt.setInt(4, time);
+			pstmt.setString(5, lang);
+			pstmt.setDate(6, releaseDate);
+			pstmt.setString(7, movieCountry);
 
 			int affectedRows = pstmt.executeUpdate();
 			System.out.println("Number of affected rows is " + affectedRows);
@@ -304,7 +41,7 @@ public class Schema1 {
 			if (affectedRows > 0) {
 				// get the ID back
 				try (ResultSet rs = pstmt.getGeneratedKeys()) {
-					// System.out.println(rs.next());
+//                	 System.out.println(rs.next());
 					if (rs.next()) {
 						id = rs.getLong(1);
 						pstmt.close();
@@ -322,19 +59,18 @@ public class Schema1 {
 		return id;
 	}
 
-	// CREATE TABLE takes(student_id INT REFERENCES student, section_id INT
-	// REFERENCES section, grade real, PRIMARY KEY(student_id, section_id));
-	public static long insertTakes(int ID, int secID, double grade, Connection conn) {
-		String SQL = "INSERT INTO takes(student_id,section_id,grade)" + "VALUES(?,?,?);";
+//	 CREATE TABLE Reviewer(rev_id INT PRIMARY KEY, rev_name CHAR(30));
+
+	public static long insertReviewer(int ID, String name, Connection conn) {
+		String SQL = "INSERT INTO Reviewer(rev_id,rev_name) " + "VALUES(?,?);";
 
 		long id = 0;
 		try {
 			conn.setAutoCommit(false);
 			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
 
-			pstmt.setInt(2, secID);
 			pstmt.setInt(1, ID);
-			pstmt.setDouble(3, grade);
+			pstmt.setString(2, name);
 
 			int affectedRows = pstmt.executeUpdate();
 			System.out.println("Number of affected rows is " + affectedRows);
@@ -342,7 +78,7 @@ public class Schema1 {
 			if (affectedRows > 0) {
 				// get the ID back
 				try (ResultSet rs = pstmt.getGeneratedKeys()) {
-					// System.out.println(rs.next());
+//                	 System.out.println(rs.next());
 					if (rs.next()) {
 						id = rs.getLong(1);
 						pstmt.close();
@@ -360,18 +96,17 @@ public class Schema1 {
 		return id;
 	}
 
-	// CREATE TABLE section_time(time_slot INT REFERENCES time_slot, section_id
-	// INT REFERENCES section, PRIMARY KEY(time_slot, section_id));
-	public static long insertSectionTime(int timeSlot, int secID, Connection conn) {
-		String SQL = "INSERT INTO section_time(time_slot,section_id)" + "VALUES(?,?);";
+//	 CREATE TABLE Genres(gen_id INT PRIMARY KEY, gen_title CHAR(20));
+	public static long insertGenres(int ID, String title, Connection conn) {
+		String SQL = "INSERT INTO Genres(gen_id,gen_title) " + "VALUES(?,?);";
 
 		long id = 0;
 		try {
 			conn.setAutoCommit(false);
 			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
 
-			pstmt.setInt(2, secID);
-			pstmt.setInt(1, timeSlot);
+			pstmt.setInt(1, ID);
+			pstmt.setString(2, title);
 
 			int affectedRows = pstmt.executeUpdate();
 			System.out.println("Number of affected rows is " + affectedRows);
@@ -379,7 +114,7 @@ public class Schema1 {
 			if (affectedRows > 0) {
 				// get the ID back
 				try (ResultSet rs = pstmt.getGeneratedKeys()) {
-					// System.out.println(rs.next());
+//                	 System.out.println(rs.next());
 					if (rs.next()) {
 						id = rs.getLong(1);
 						pstmt.close();
@@ -397,43 +132,236 @@ public class Schema1 {
 		return id;
 	}
 
-	// ///////////////////////////////////////// Data Population Method
-	// //////////////////////////////////////////////////////
-	public static void populateDepartment(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
+//	 CREATE TABLE Actor(act_id INT PRIMARY KEY, act_fname CHAR(20), act_lname CHAR(20), act_gender CHAR(1));
+	public static long insertActor(int ID, String fName, String lName, String gender, Connection conn) {
+		String SQL = "INSERT INTO Actor(act_id,act_fname,act_lname,act_gender) " + "VALUES(?,?,?,?);";
 
-			if (insertDepartment(i, "CS" + i, i, conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
+		long id = 0;
+		try {
+			conn.setAutoCommit(false);
+			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+
+			pstmt.setInt(1, ID);
+			pstmt.setString(2, fName);
+			pstmt.setString(3, lName);
+			pstmt.setString(4, gender);
+
+			int affectedRows = pstmt.executeUpdate();
+			System.out.println("Number of affected rows is " + affectedRows);
+			// check the affected rows
+			if (affectedRows > 0) {
+				// get the ID back
+				try (ResultSet rs = pstmt.getGeneratedKeys()) {
+//                	 System.out.println(rs.next());
+					if (rs.next()) {
+						id = rs.getLong(1);
+						pstmt.close();
+						conn.commit();
+					}
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+					System.out.println(ex.getMessage());
+				}
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex.getMessage());
+			ex.printStackTrace();
 		}
+		return id;
 	}
 
-	public static void populateInstructor(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			if (insertInstructor(i, "Name" + i, i, "CS" + i, conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
+//	 CREATE TABLE Director(dir_id INT PRIMARY KEY, dir_fname CHAR(20), dir_lname CHAR(20));
+	public static long insertDirector(int ID, String fName, String lName, Connection conn) {
+		String SQL = "INSERT INTO Director(dir_id,dir_fname,dir_lname) " + "VALUES(?,?,?);";
+
+		long id = 0;
+		try {
+			conn.setAutoCommit(false);
+			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+
+			pstmt.setInt(1, ID);
+			pstmt.setString(2, fName);
+			pstmt.setString(3, lName);
+
+			int affectedRows = pstmt.executeUpdate();
+			System.out.println("Number of affected rows is " + affectedRows);
+			// check the affected rows
+			if (affectedRows > 0) {
+				// get the ID back
+				try (ResultSet rs = pstmt.getGeneratedKeys()) {
+//                	 System.out.println(rs.next());
+					if (rs.next()) {
+						id = rs.getLong(1);
+						pstmt.close();
+						conn.commit();
+					}
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+					System.out.println(ex.getMessage());
+				}
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex.getMessage());
+			ex.printStackTrace();
 		}
+		return id;
 	}
 
-	public static void populateClassroom(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			if (insertClassroom(i, i, 100 + i, conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
+//	 CREATE TABLE movie_direction(dir_id INT REFERENCES Director, mov_id INT REFERENCES Movie, PRIMARY KEY(dir_id,mov_id));
+	public static long insertMovieDirection(int ID, int movieID, Connection conn) {
+		String SQL = "INSERT INTO movie_direction(dir_id,mov_id) " + "VALUES(?,?);";
+
+		long id = 0;
+		try {
+			conn.setAutoCommit(false);
+			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+
+			pstmt.setInt(1, ID);
+			pstmt.setInt(2, movieID);
+
+			int affectedRows = pstmt.executeUpdate();
+			System.out.println("Number of affected rows is " + affectedRows);
+			// check the affected rows
+			if (affectedRows > 0) {
+				// get the ID back
+				try (ResultSet rs = pstmt.getGeneratedKeys()) {
+//                	 System.out.println(rs.next());
+					if (rs.next()) {
+						id = rs.getLong(1);
+						pstmt.close();
+						conn.commit();
+					}
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+					System.out.println(ex.getMessage());
+				}
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex.getMessage());
+			ex.printStackTrace();
 		}
+		return id;
+	}
+//	 CREATE TABLE movie_cast(act_id INT REFERENCES Actor, mov_id INT REFERENCES Movie, role CHAR(30), PRIMARY KEY(act_id, mov_id));
+
+	public static long insertMovieCast(int actorID, int movieID, String role, Connection conn) {
+		String SQL = "INSERT INTO movie_cast(act_id,mov_id,role) " + "VALUES(?,?,?);";
+
+		long id = 0;
+		try {
+			conn.setAutoCommit(false);
+			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+
+			pstmt.setInt(1, actorID);
+			pstmt.setInt(2, movieID);
+			pstmt.setString(3, role);
+
+			int affectedRows = pstmt.executeUpdate();
+			System.out.println("Number of affected rows is " + affectedRows);
+			// check the affected rows
+			if (affectedRows > 0) {
+				// get the ID back
+				try (ResultSet rs = pstmt.getGeneratedKeys()) {
+//                	 System.out.println(rs.next());
+					if (rs.next()) {
+						id = rs.getLong(1);
+						pstmt.close();
+						conn.commit();
+					}
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+					System.out.println(ex.getMessage());
+				}
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex.getMessage());
+			ex.printStackTrace();
+		}
+		return id;
 	}
 
+//	 CREATE TABLE movie_genres(mov_id INT REFERENCES Movie, gen_id INT REFERENCES genres, PRIMARY KEY(mov_id,gen_id));
+	public static long insertMovieGenres(int movieID, int genreID, Connection conn) {
+		String SQL = "INSERT INTO movie_genres(mov_id,gen_id) " + "VALUES(?,?);";
+
+		long id = 0;
+		try {
+			conn.setAutoCommit(false);
+			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+
+			pstmt.setInt(1, movieID);
+			pstmt.setInt(2, genreID);
+
+			int affectedRows = pstmt.executeUpdate();
+			System.out.println("Number of affected rows is " + affectedRows);
+			// check the affected rows
+			if (affectedRows > 0) {
+				// get the ID back
+				try (ResultSet rs = pstmt.getGeneratedKeys()) {
+//                	 System.out.println(rs.next());
+					if (rs.next()) {
+						id = rs.getLong(1);
+						pstmt.close();
+						conn.commit();
+					}
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+					System.out.println(ex.getMessage());
+				}
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex.getMessage());
+			ex.printStackTrace();
+		}
+		return id;
+	}
+
+//	 CREATE TABLE Rating(mov_id INT REFERENCES Movie, rev_id INT REFERENCES Reviewer, rev_stars INT, num_o_ratings INT, PRIMARY KEY(mov_id,rev_id));
+	public static long insertRating(int movieID, int reviewID, int stars, int rating, Connection conn) {
+		String SQL = "INSERT INTO Rating(mov_id,rev_id,rev_stars,num_o_ratings) " + "VALUES(?,?,?,?);";
+
+		long id = 0;
+		try {
+			conn.setAutoCommit(false);
+			PreparedStatement pstmt = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+
+			pstmt.setInt(1, movieID);
+			pstmt.setInt(2, reviewID);
+			pstmt.setInt(3, stars);
+			pstmt.setInt(4, rating);
+
+			int affectedRows = pstmt.executeUpdate();
+			System.out.println("Number of affected rows is " + affectedRows);
+			// check the affected rows
+			if (affectedRows > 0) {
+				// get the ID back
+				try (ResultSet rs = pstmt.getGeneratedKeys()) {
+//                	 System.out.println(rs.next());
+					if (rs.next()) {
+						id = rs.getLong(1);
+						pstmt.close();
+						conn.commit();
+					}
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+					System.out.println(ex.getMessage());
+				}
+			}
+		} catch (SQLException ex) {
+			System.out.println(ex.getMessage());
+			ex.printStackTrace();
+		}
+		return id;
+	}
+
+	////////////////////////////////////////////////////////// Data Population
+	////////////////////////////////////////////////////////// Methods
+	////////////////////////////////////////////////////////// //////////////////////////////////////////////////////////
 	@SuppressWarnings("deprecation")
-	public static void populateTimeSlot(Connection conn) {
+	public static void populateMovie(Connection conn) {
 		for (int i = 1; i < 10000; i++) {
-			if (insertTimeSlot(i, "day" + i, new Time(12, 0, 0), new Time(13, 0, 0), conn) == 0) {
+
+			if (insertMovie(i, "Movie" + i, i, i, "EN", new Date(22, 1, 1999), "US", conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
@@ -441,9 +369,10 @@ public class Schema1 {
 		}
 	}
 
-	public static void populateStudent(Connection conn) {
+	public static void populateReviewer(Connection conn) {
 		for (int i = 1; i < 10000; i++) {
-			if (insertStudent(i, "name" + i, i, "CS" + i, i, conn) == 0) {
+
+			if (insertReviewer(i, "Name" + i, conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
@@ -451,9 +380,10 @@ public class Schema1 {
 		}
 	}
 
-	public static void populateCourse(Connection conn) {
+	public static void populateGenres(Connection conn) {
 		for (int i = 1; i < 10000; i++) {
-			if (insertCourse(i, "CSEN" + i, i, "CS" + i, conn) == 0) {
+
+			if (insertGenres(i, "Gnere" + i, conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
@@ -461,9 +391,12 @@ public class Schema1 {
 		}
 	}
 
-	public static void populatePrerequiste(Connection conn) {
+	public static void populateActor(Connection conn) {
 		for (int i = 1; i < 10000; i++) {
-			if (insertPrerequiste(i, i, conn) == 0) {
+			String result = "M";
+			if (i > 5000)
+				result = "F";
+			if (insertActor(i, "Actor" + i, "Actor" + i, result, conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
@@ -471,35 +404,10 @@ public class Schema1 {
 		}
 	}
 
-	public static void populateSection(Connection conn) {
-		int j = 1;
+	public static void populateDirector(Connection conn) {
 		for (int i = 1; i < 10000; i++) {
-			if (insertSection(i, i, 2019, i, i, j, j, conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
-			j++;
-		}
-	}
 
-	public static void populateTakes(Connection conn) {
-		double j = 0.7;
-		for (int i = 1; i < 10000; i++) {
-			if (j == 5)
-				j = 0.7;
-			if (insertTakes(i, i, j, conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
-			j += 0.3;
-		}
-	}
-
-	public static void populateSectionTime(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			if (insertSectionTime(i, i, conn) == 0) {
+			if (insertDirector(i, "Actor" + i, "Actor" + i, conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
@@ -507,24 +415,67 @@ public class Schema1 {
 		}
 	}
 
-	public static void insertSchema1(Connection connection) {
-		populateDepartment(connection);
-		populateInstructor(connection);
-		populateClassroom(connection);
-		populateTimeSlot(connection);
-		populateStudent(connection);
-		populateCourse(connection);
-		populatePrerequiste(connection);
-		populateSection(connection);
-		populateTakes(connection);
-		populateSectionTime(connection);
+	public static void populateMovieDirection(Connection conn) {
+		for (int i = 1; i < 10000; i++) {
+
+			if (insertMovieDirection(i, i, conn) == 0) {
+				System.err.println("insertion of record " + i + " failed");
+				break;
+			} else
+				System.out.println("insertion was successful");
+		}
 	}
 
-	public static void main(String[] args) {
+	public static void populateMovieCast(Connection conn) {
+		for (int i = 1; i < 10000; i++) {
+
+			if (insertMovieCast(i, i, "Actor" + i, conn) == 0) {
+				System.err.println("insertion of record " + i + " failed");
+				break;
+			} else
+				System.out.println("insertion was successful");
+		}
+	}
+
+	public static void populateMovieGenres(Connection conn) {
+		for (int i = 1; i < 10000; i++) {
+
+			if (insertMovieGenres(i, i, conn) == 0) {
+				System.err.println("insertion of record " + i + " failed");
+				break;
+			} else
+				System.out.println("insertion was successful");
+		}
+	}
+
+	public static void populateRating(Connection conn) {
+		for (int i = 1; i < 10000; i++) {
+
+			if (insertRating(i, i, i, i, conn) == 0) {
+				System.err.println("insertion of record " + i + " failed");
+				break;
+			} else
+				System.out.println("insertion was successful");
+		}
+	}
+
+	public static void insertSchema4(Connection connection) {
+		populateMovie(connection);
+		populateReviewer(connection);
+		populateGenres(connection);
+		populateActor(connection);
+		populateDirector(connection);
+		populateMovieDirection(connection);
+		populateMovieCast(connection);
+		populateMovieGenres(connection);
+		populateRating(connection);
+	}
+
+	public static void main(String[] argv) {
 
 		hostname = "localhost";
 		port_Number = 5432;
-		db_Name = "schema1";
+		db_Name = "schema4";
 		username = "postgres";
 		password = "usersql3";
 
@@ -545,9 +496,11 @@ public class Schema1 {
 		System.out.println("PostgreSQL JDBC Driver Registered!");
 
 		Connection connection = null;
+
 		try {
 			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname + ":" + port_Number + "/" + db_Name, username, password);
-			insertSchema1(connection);
+			insertSchema4(connection);
+
 		} catch (SQLException e) {
 
 			System.out.println("Connection Failed! Check output console");
