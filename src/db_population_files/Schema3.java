@@ -175,7 +175,7 @@ public class Schema3 {
 		port_Number = 5432;
 		db_Name = "schema3";
 		username = "postgres";
-		password = "usersql3";
+		password = "hellojana";
 
 		System.out.println("-------- PostgreSQL " + "JDBC Connection Testing ------------");
 
