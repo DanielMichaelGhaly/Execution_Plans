@@ -37,6 +37,8 @@ public class Schema1 {
 			"Quinn", "Rachel", "Sam", "Tina", "Uma", "Vera", "Will", "Xena",
 			"Yara", "Zane"};
 
+	private static Random rand = new Random();
+
 	// //////////////////////////////////////////// Table Insertion Methods
 	// ///////////////////////////////////////////////////////////////
 	public static long insertDepartment(int building, String deptName, int budget, Connection conn) {
@@ -423,7 +425,6 @@ public class Schema1 {
 	// ///////////////////////////////////////// Data Population Method
 	// //////////////////////////////////////////////////////
 	public static void populateDepartment(Connection conn) {
-		Random rand = new Random();
 		for (int i = 1; i <= 60; i++) {
 
 			if (insertDepartment(i, department_Names[i-1], i*rand.nextInt(10000), conn) == 0) {
@@ -435,7 +436,6 @@ public class Schema1 {
 	}
 
 	public static void populateInstructor(Connection conn) {
-		Random rand = new Random();
 		int id = 1;
 		for(int i = 1; i<=60; i++)
 		{
@@ -493,13 +493,29 @@ public class Schema1 {
 	}
 
 	public static void populateCourse(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			if (insertCourse(i, "CSEN" + i, i, "CS" + i, conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
+		int id = 1;
+		for(int i = 1; i<=60; i++)
+		{
+			for(int j = 1; j<=rand.nextInt(26)+20; j++)
+			{
+				if(insertCourse(id++,department_Names[i-1]+" Course " + j, rand.nextInt(8)+1,department_Names[i-1],conn)==0)
+				{
+					System.err.println("insertion of record " + i + " failed");
+					break;
+				}
+				else{
+					System.out.println("insertion was successful");
+				}
+			}
 		}
+
+//		for (int i = 1; i < 10000; i++) {
+//			if (insertCourse(i, "CSEN" + i, i, "CS" + i, conn) == 0) {
+//				System.err.println("insertion of record " + i + " failed");
+//				break;
+//			} else
+//				System.out.println("insertion was successful");
+//		}
 	}
 
 	public static void populatePrerequiste(Connection conn) {
