@@ -11,7 +11,16 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../../../PostGres/postgresql-42.7.6.jar!/" />
+          <root url="jar://C:/../PostGres/postgresql-42.7.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/postgresql-42.7.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

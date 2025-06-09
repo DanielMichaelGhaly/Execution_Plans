@@ -7,6 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
+import java.util.Set;
+import java.util.HashSet;
 
 public class Schema2 {
 
@@ -255,88 +258,172 @@ public class Schema2 {
 	/////////////////////////////////////////////// //////////////////////////////////////////////////////////////
 	@SuppressWarnings("deprecation")
 	public static void populateEmployee(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			String result = "M";
-			if (i > 5000)
-				result = "F";
-			if (insertEmployee("Employee" + i, "M" + i, "Employee" + i, i, new Date(22, 1, 1999), "address" + i, result,
-					i, i, i, conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
-		}
-		int i = 10000;
-		insertEmployee("Employee" + i, "M" + i, "Employee" + i, i, new Date(22, 1, 1999), "address" + i, "M", i, i, 1,
-				conn);
-		i++;
-		insertEmployee("Employee" + i, "M" + i, "Employee" + i, i, new Date(22, 1, 1999), "address" + i, "M", i, i, 1,
-				conn);
+		for (int i = 1; i <= 16000; i++) {
+			String sex = (i % 2 == 0) ? "M" : "F";
+			String fname = "EmpF" + i;
+			String lname = "EmpL" + i;
+			String address = "Address_" + i;
+			int ssn = i;
+			Date bdate = Date.valueOf("1980-01-01"); // use java.sql.Date
+			// For the first employee, make supervisor their own SSN to satisfy FK constraint
+			int super_ssn = (i > 1) ? i - 1 : i;
+			int salary = 40000 + (i % 50000); // set salary in a meaningful range
+			int dno = (i % 150) + 1; // spread employees across 150 departments
 
+			int result = (int)insertEmployee(fname, "M" + i, lname, ssn, bdate, address, sex, salary, super_ssn, dno, conn);
+			if (result == 0) {
+				System.err.println("insertion of employee " + i + " failed");
+				break;
+			} else {
+				System.out.println("Employee " + i + " inserted.");
+			}
+		}
 	}
+
+
+
 
 	@SuppressWarnings("deprecation")
 	public static void populateDepartment(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			if (insertDepartment("Department" + i, i, i, new Date(1, 1, 1990), conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
+		for (int i = 1; i <= 150; i++) {
+			String dname = "Department_" + i;
+			int dnumber = i;
+			int mgr_ssn = i; // Manager SSN corresponds to employee SSN 1 to 150
+			Date mgr_start_date = Date.valueOf("2000-01-01");
+
+			int result = (int)insertDepartment(dname, dnumber, mgr_ssn, mgr_start_date, conn);
+			if (result == 0) {
+				System.err.println("Department " + i + " failed.");
 				break;
-			} else
-				System.out.println("insertion was successful");
+			} else {
+				System.out.println("Department " + i + " inserted.");
+			}
 		}
 	}
+
+
 
 	public static void populateDeptLocations(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			if (insertDeptLocations(i, "Location" + i, conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
+		for (int i = 1; i <= 150; i++) {
+			String location = "Location_" + i;
+			int dnumber = i;
+
+			int result = (int)insertDeptLocations(dnumber, location, conn);
+			if (result == 0) {
+				System.err.println("Department location " + i + " failed.");
 				break;
-			} else
-				System.out.println("insertion was successful");
+			} else {
+				System.out.println("Department location " + i + " inserted.");
+			}
 		}
 	}
+
+
+
 
 	public static void populateProject(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			if (insertProject("Project" + i, i, "Location1" + i, i, conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
+		for (int i = 1; i <= 9200; i++) {
+			String pname = "Project_" + i;
+			int pnumber = i;
+			String plocation = "Location_" + ((i % 150) + 1); // matches existing dept locations
+			int dnum = (i % 150) + 1;
+
+			int result = (int)insertProject(pname, pnumber, plocation, dnum, conn);
+			if (result == 0) {
+				System.err.println("Project " + i + " failed.");
 				break;
-			} else
-				System.out.println("insertion was successful");
+			} else {
+				System.out.println("Project " + i + " inserted.");
+			}
 		}
 	}
 
+
+
 	public static void populateWorksOn(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			if (insertWorksOn(i, i, i, conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
+		Random random = new Random();
+
+		for (int empId = 1; empId <= 16000; empId++) {
+			int projectsToAssign = 2 + random.nextInt(4); // 2 to 5 projects
+			Set<Integer> assignedProjects = new HashSet<>();
+
+			for (int j = 0; j < projectsToAssign; j++) {
+				int pno;
+				do {
+					pno = 1 + random.nextInt(9200);
+				} while (assignedProjects.contains(pno)); // avoid duplicate projects for same employee
+
+				assignedProjects.add(pno);
+
+				int hours = 10 + random.nextInt(21); // 10 to 30 hours
+
+				int result = (int)insertWorksOn(empId, pno, hours, conn);
+				if (result == 0) {
+					System.err.println("works_on insert failed for emp " + empId + " project " + pno);
+				} else {
+					System.out.println("Employee " + empId + " assigned to project " + pno);
+				}
+			}
 		}
 	}
+
+
+
 
 	@SuppressWarnings("deprecation")
 	public static void populateDependent(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			String result = "F";
-			if (i > 5000)
-				result = "M";
-			if (insertDependent(i, "Name" + i, result, new Date(1, 1, 1999), "child", conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
+		int dependentCount = 0;
+		int maxDependents = 10000;
+
+		// Assume 8000 employees will have at least one dependent
+		for (int empId = 1; empId <= 8000 && dependentCount < maxDependents; empId++) {
+			// We'll create dependents where dependent name = employee fname to satisfy query
+			// First, we need to fetch employee's fname and sex to use here
+
+			String fname = "EmpF" + empId;  // since you generate employees with this pattern
+			String sex = (empId % 2 == 0) ? "M" : "F";
+
+			// Create 1-3 dependents per employee
+			int numDependents = 1 + (int)(Math.random() * 3);
+
+			for (int j = 0; j < numDependents && dependentCount < maxDependents; j++) {
+				String depName;
+				String depSex;
+
+				if (j == 0) {
+					// For the first dependent, **set dependent_name = employee fname and sex = employee sex**
+					depName = fname;
+					depSex = sex;
+				} else {
+					// For other dependents, create different names and alternate sex
+					depName = "Dep_" + empId + "_" + j;
+					depSex = (j % 2 == 0) ? "M" : "F";
+				}
+
+				String relationship = (j == 0) ? "spouse" : "child";
+				Date birthDate = Date.valueOf("199" + (j % 10) + "-01-01"); // Random birth years in 1990s
+
+				int result = (int)insertDependent(empId, depName, depSex, birthDate, relationship, conn);
+				if (result == 0) {
+					System.err.println("insertion of dependent for employee " + empId + " failed");
+				} else {
+					dependentCount++;
+					System.out.println("Dependent inserted for employee " + empId + ": " + depName);
+				}
+			}
 		}
+		System.out.println("Total dependents inserted: " + dependentCount);
 	}
 
+
+
 	public static void insertSchema2(Connection connection) {
-		populateEmployee(connection);
-		populateDepartment(connection);
-		populateDeptLocations(connection);
-		populateProject(connection);
+		//populateEmployee(connection);
+		//populateDepartment(connection);
+		//populateDeptLocations(connection);
+		//populateProject(connection);
 		populateWorksOn(connection);
-		populateDependent(connection);
+		//populateDependent(connection);
 	}
 
 	public static void main(String[] argv) {
@@ -345,7 +432,7 @@ public class Schema2 {
 		port_Number = 5432;
 		db_Name = "schema2";
 		username = "postgres";
-		password = "usersql3";
+		password = "postgreSQL2025";
 
 		System.out.println("-------- PostgreSQL " + "JDBC Connection Testing ------------");
 

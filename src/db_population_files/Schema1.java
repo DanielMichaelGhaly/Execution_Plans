@@ -548,7 +548,7 @@ public class Schema1 {
 
 		Connection connection = null;
 		try {
-			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname + ":" + port_Number + "/" + db_Name, username, password);
+			connection = DriverManager.getConnection("jdbc:postgresql://" + "localhost" + ":" + "5432" + "/" + "schema1", "postgres", "postgreSQL2025");
 			insertSchema1(connection);
 		} catch (SQLException e) {
 
