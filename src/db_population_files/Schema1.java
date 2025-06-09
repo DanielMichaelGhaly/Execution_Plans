@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 
+//60 departments -> each with 20-40 courses and 10-35 instructors and at least 1100 students
+
 public class Schema1 {
 
 	private static String hostname;
@@ -15,6 +17,8 @@ public class Schema1 {
 	private static String db_Name;
 	private static String username;
 	private static String password;
+
+	private static String[] department_Names = {"MET", "IET", "MECHATRONICS", "CIVIL", "CS", "IT", "BIO", "CHEM", "PHYSICS", "MATH"};
 
 	// //////////////////////////////////////////// Table Insertion Methods
 	// ///////////////////////////////////////////////////////////////
@@ -549,7 +553,7 @@ public class Schema1 {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname + ":" + port_Number + "/" + db_Name, username, password);
-			insertSchema1(connection);
+			//insertSchema1(connection);
 		} catch (SQLException e) {
 
 			System.out.println("Connection Failed! Check output console");
