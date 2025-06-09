@@ -418,12 +418,12 @@ public class Schema2 {
 
 
 	public static void insertSchema2(Connection connection) {
-		//populateEmployee(connection);
-		//populateDepartment(connection);
-		//populateDeptLocations(connection);
-		//populateProject(connection);
+		populateEmployee(connection);
+		populateDepartment(connection);
+		populateDeptLocations(connection);
+		populateProject(connection);
 		populateWorksOn(connection);
-		//populateDependent(connection);
+		populateDependent(connection);
 	}
 
 	public static void main(String[] argv) {
