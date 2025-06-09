@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
 
 public class Schema3 {
 
@@ -133,18 +134,19 @@ public class Schema3 {
 	///////////////////////////////////////////////////////// Methods
 	///////////////////////////////////////////////////////// //////////////////////////////////////////////////////////
 	public static void populateSailor(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			if (insertSailor(i, "Sailor" + i, i, i, conn) == 0) {
+		for (int i = 1; i < 19000; i++) {
+			if (insertSailor(i, "Sailor" + i, (i%10) + 1, 18 + (int)(Math.random() * 42), conn) == 0) { //age between 18 & 60
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
 				System.out.println("insertion was successful");
 		}
 	}
-
+	
+	public static String[] colors = {"Red","Blue", "Green"};
 	public static void populateBoat(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			if (insertBoat(i, "Boat" + i, "Red", conn) == 0) {
+		for (int i = 1; i < 3000; i++) {
+			if (insertBoat(i, "Boat" + i, colors[i%3], conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
@@ -154,13 +156,42 @@ public class Schema3 {
 
 	@SuppressWarnings("deprecation")
 	public static void populateReserves(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			if (insertReserves(i, i, new Date(1, 1, 1999), conn) == 0) {
+		Random rand = new Random();
+		
+		for (int i = 1; i <= 1000; i++) {		
+			if (insertReserves(i, 103, new Date(rand.nextInt(28) + 1, rand.nextInt(12) + 1, 2025), conn) == 0) { //rand.nextInt(19000) + 1 
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
 				System.out.println("insertion was successful");
 		}
+				
+		for (int i = 1001; i <= 2500; i++) { //red boats
+			int redBoatId = (rand.nextInt(1000) + 1) * 3; //any id divisible by 3 identifies a red boat according to the colors list 
+			if (insertReserves(i, redBoatId, new Date(rand.nextInt(28) + 1, rand.nextInt(12) + 1, 2025), conn) == 0) {
+				System.err.println("insertion of record " + i + " failed");
+				break;
+			} else
+				System.out.println("insertion was successful");
+		}
+		
+		for (int i = 1001; i <= 2500; i++) { //green boats
+			int greenBoatId = ((rand.nextInt(1000)) * 3) + 2; // green boat 
+			if (insertReserves(i, greenBoatId, new Date(rand.nextInt(28) + 1, rand.nextInt(12) + 1, 2025), conn) == 0) {
+				System.err.println("insertion of record " + i + " failed");
+				break;
+			} else
+				System.out.println("insertion was successful");
+		}
+		
+		for (int i = 2501; i <= 35000; i++) {  
+			if (insertReserves(i, rand.nextInt(3000) + 1, new Date(rand.nextInt(28) + 1, rand.nextInt(12) + 1, 2025), conn) == 0) {
+				System.err.println("insertion of record " + i + " failed");
+				break;
+			} else
+				System.out.println("insertion was successful");
+		}
+		
 	}
 
 	public static void insertSchema3(Connection connection) {
