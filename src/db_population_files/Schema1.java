@@ -32,7 +32,7 @@ public class Schema1 {
 			"Mechanical Engineering", "Medicine", "Music", "Nursing", "Philosophy",
 		    "Political Science", "Psychology", "Public Administration", "Sociology"};
 
-	private static String[] instructor_names = {"Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah",
+	private static String[] instructor_Names = {"Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah",
 			"Ian", "Jack", "Kathy", "Liam", "Mia", "Noah", "Olivia", "Paul",
 			"Quinn", "Rachel", "Sam", "Tina", "Uma", "Vera", "Will", "Xena",
 			"Yara", "Zane"};
@@ -441,14 +441,14 @@ public class Schema1 {
 		{
 			for(int j = 1; j<=rand.nextInt(26)+10; j++)
 			{
-//				if(insertInstructor(id++,,rand.nextInt(10000),department_Names[i-1],conn)==0)
-//				{
-//					System.err.println("insertion of record " + i + " failed");
-//					break;
-//				}
-//				else{
-//					System.out.println("insertion was successful");
-//				}
+				if(insertInstructor(id++,instructor_Names[rand.nextInt(26)]+instructor_Names[rand.nextInt(26)], rand.nextInt(10000),department_Names[i-1],conn)==0)
+				{
+					System.err.println("insertion of record " + i + " failed");
+					break;
+				}
+				else{
+					System.out.println("insertion was successful");
+				}
 			}
 
 		}
@@ -589,7 +589,7 @@ public class Schema1 {
 		try {
 			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname + ":" + port_Number + "/" + db_Name, username, password);
 			//insertSchema1(connection);
-			System.out.println(department_Names.length);
+			System.out.println(instructor_Names.length);
 		} catch (SQLException e) {
 
 			System.out.println("Connection Failed! Check output console");
