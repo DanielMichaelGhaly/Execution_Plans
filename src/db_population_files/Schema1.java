@@ -483,13 +483,29 @@ public class Schema1 {
 	}
 
 	public static void populateStudent(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			if (insertStudent(i, "name" + i, i, "CS" + i, i, conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
+		int id = 1;
+		for(int i = 1; i<=60; i++)
+		{
+			for(int j = 1; j<=rand.nextInt(2000)+1100; j++)
+			{
+				String student_Name = instructor_Names[rand.nextInt(26)]+instructor_Names[rand.nextInt(26)];
+				if(insertStudent(id++, student_Name , rand.nextInt(100)+30, department_Names[i-1], rand.nextInt(700)+1, conn)==0)
+				{
+					System.err.println("insertion of record " + i + " failed");
+					break;
+				}
+				else{
+					System.out.println("insertion was successful");
+				}
+			}
 		}
+//		for (int i = 1; i < 10000; i++) {
+//			if (insertStudent(i, "name" + i, rand.nextInt(100)+1, "CS" + i, i, conn) == 0) {
+//				System.err.println("insertion of record " + i + " failed");
+//				break;
+//			} else
+//				System.out.println("insertion was successful");
+//		}
 	}
 
 	public static void populateCourse(Connection conn) {
@@ -604,8 +620,7 @@ public class Schema1 {
 		Connection connection = null;
 		try {
 			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname + ":" + port_Number + "/" + db_Name, username, password);
-			//insertSchema1(connection);
-			System.out.println(instructor_Names.length);
+			insertSchema1(connection);
 		} catch (SQLException e) {
 
 			System.out.println("Connection Failed! Check output console");
