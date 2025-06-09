@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.util.Random;
 
 //60 departments -> each with 20-40 courses and 10-35 instructors and at least 1100 students
 
@@ -18,7 +19,23 @@ public class Schema1 {
 	private static String username;
 	private static String password;
 
-	private static String[] department_Names = {"MET", "IET", "MECHATRONICS", "CIVIL", "CS", "IT", "BIO", "CHEM", "PHYSICS", "MATH"};
+	private static String[] department_Names = {"MET", "IET", "MECHATRONICS", "CIVIL",  "IT", "BIO", "CHEM", "PHYSICS", "MATH",
+			"Accounting", "Aerospace Engineering", "Agricultural Science", "Anthropology", "Architecture",
+			"Art and Design", "Astronomy", "Biochemistry", "Biomedical Engineering",
+			"Business Administration", "Chemical Engineering", "Classics", "Criminal Justice", "Data Science",
+			"Dentistry", "Design Studies", "Economics", "Education",
+			"Emergency Management", "English", "Environmental Science", "Ethnic Studies", "Fashion Design",
+			"Finance", "Food Science", "Forensic Science", "Geography", "Geology",
+			"Graphic Design", "Health Sciences", "History", "Hospitality Management", "Human Resources",
+			"Industrial Design", "Information Technology", "International Relations", "Journalism", "Law",
+			"Linguistics", "Management", "Marketing", "Materials Science",
+			"Mechanical Engineering", "Medicine", "Music", "Nursing", "Philosophy",
+		    "Political Science", "Psychology", "Public Administration", "Sociology"};
+
+	private static String[] instructor_names = {"Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah",
+			"Ian", "Jack", "Kathy", "Liam", "Mia", "Noah", "Olivia", "Paul",
+			"Quinn", "Rachel", "Sam", "Tina", "Uma", "Vera", "Will", "Xena",
+			"Yara", "Zane"};
 
 	// //////////////////////////////////////////// Table Insertion Methods
 	// ///////////////////////////////////////////////////////////////
@@ -406,9 +423,10 @@ public class Schema1 {
 	// ///////////////////////////////////////// Data Population Method
 	// //////////////////////////////////////////////////////
 	public static void populateDepartment(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
+		Random rand = new Random();
+		for (int i = 1; i <= 60; i++) {
 
-			if (insertDepartment(i, "CS" + i, i, conn) == 0) {
+			if (insertDepartment(i, department_Names[i-1], i*rand.nextInt(10000), conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
@@ -417,13 +435,30 @@ public class Schema1 {
 	}
 
 	public static void populateInstructor(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-			if (insertInstructor(i, "Name" + i, i, "CS" + i, conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
+		Random rand = new Random();
+		int id = 1;
+		for(int i = 1; i<=60; i++)
+		{
+			for(int j = 1; j<=rand.nextInt(26)+10; j++)
+			{
+//				if(insertInstructor(id++,,rand.nextInt(10000),department_Names[i-1],conn)==0)
+//				{
+//					System.err.println("insertion of record " + i + " failed");
+//					break;
+//				}
+//				else{
+//					System.out.println("insertion was successful");
+//				}
+			}
+
 		}
+//		for (int i = 1; i < 10000; i++) {
+//			if (insertInstructor(i, "Name" + i, i, "CS" + i, conn) == 0) {
+//				System.err.println("insertion of record " + i + " failed");
+//				break;
+//			} else
+//				System.out.println("insertion was successful");
+//		}
 	}
 
 	public static void populateClassroom(Connection conn) {
@@ -554,6 +589,7 @@ public class Schema1 {
 		try {
 			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname + ":" + port_Number + "/" + db_Name, username, password);
 			//insertSchema1(connection);
+			System.out.println(department_Names.length);
 		} catch (SQLException e) {
 
 			System.out.println("Connection Failed! Check output console");
