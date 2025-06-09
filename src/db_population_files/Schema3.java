@@ -7,7 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class Schema3 {
 
@@ -96,7 +99,6 @@ public class Schema3 {
 //	 CREATE TABLE Reserves(sid INT REFERENCES Sailors, bid INT REFERENCES Boat, day date, PRIMARY KEY(sid,bid));
 	public static long insertReserves(int sID, int bID, Date day, Connection conn) {
 		String SQL = "INSERT INTO Reserves(sid,bid,day) " + "VALUES(?,?,?);";
-
 		long id = 0;
 		try {
 			conn.setAutoCommit(false);
@@ -134,7 +136,7 @@ public class Schema3 {
 	///////////////////////////////////////////////////////// Methods
 	///////////////////////////////////////////////////////// //////////////////////////////////////////////////////////
 	public static void populateSailor(Connection conn) {
-		for (int i = 1; i < 19000; i++) {
+		for (int i = 1; i <= 19000; i++) {
 			if (insertSailor(i, "Sailor" + i, (i%10) + 1, 18 + (int)(Math.random() * 42), conn) == 0) { //age between 18 & 60
 				System.err.println("insertion of record " + i + " failed");
 				break;
@@ -145,7 +147,7 @@ public class Schema3 {
 	
 	public static String[] colors = {"Red","Blue", "Green"};
 	public static void populateBoat(Connection conn) {
-		for (int i = 1; i < 3000; i++) {
+		for (int i = 1; i <= 3000; i++) {
 			if (insertBoat(i, "Boat" + i, colors[i%3], conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
@@ -157,40 +159,89 @@ public class Schema3 {
 	@SuppressWarnings("deprecation")
 	public static void populateReserves(Connection conn) {
 		Random rand = new Random();
+	    Set<String> usedPairs = new HashSet<>();
+	    int insertedCount = 0;
+
+	    while (insertedCount < 35000) {
+	        int sid = rand.nextInt(19000) + 1;  // 1 to 19000
+	        int bid = rand.nextInt(3000) + 1;   // 1 to 3000
+	        if(insertedCount%15 == 0)
+	        {
+	        	bid = 103;
+	        }
+
+	        String key = sid + "," + bid;
+
+	        // Skip if this (sid, bid) pair is already used
+	        if (usedPairs.contains(key)) continue;
+
+	        // Generate random date in 2025
+	        int day = rand.nextInt(28) + 1;     // 1–28 (to avoid invalid dates)
+	        int month = rand.nextInt(12) + 1;   // 1–12
+	        LocalDate localDate = LocalDate.of(2025, month, day);
+	        Date sqlDate = Date.valueOf(localDate);
+
+	        // Attempt insertion
+	        if (insertReserves(sid, bid, sqlDate, conn) == 0) {
+				System.err.println("insertion of record {"+ sid + ", " + bid + "} failed");
+				break;
+	        } else {
+				System.out.println("insertion was successful");
+	            usedPairs.add(key);
+	            insertedCount++;
+	        }
+	    }
+//		Random rand = new Random();
+//		for(int i = 1; i<=3000; i++)
+//		{
+//			for(int j = 1; j<=11; j++)
+//			{
+//				if(insertReserves((i*j)%19000 + 1, i, new Date(rand.nextInt(28)+1, rand.nextInt(12)+1,2025), conn)==0)
+//				{
+//					System.err.println("insertion of record "+ i+ " failed");
+//					break;
+//				}
+//				else {
+//					System.out.println("insertion was successful");
+//				}
+//			}
+//		}
 		
-		for (int i = 1; i <= 1000; i++) {		
-			if (insertReserves(i, 103, new Date(rand.nextInt(28) + 1, rand.nextInt(12) + 1, 2025), conn) == 0) { //rand.nextInt(19000) + 1 
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
-		}
-				
-		for (int i = 1001; i <= 2500; i++) { //red boats
-			int redBoatId = (rand.nextInt(1000) + 1) * 3; //any id divisible by 3 identifies a red boat according to the colors list 
-			if (insertReserves(i, redBoatId, new Date(rand.nextInt(28) + 1, rand.nextInt(12) + 1, 2025), conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
-		}
-		
-		for (int i = 1001; i <= 2500; i++) { //green boats
-			int greenBoatId = ((rand.nextInt(1000)) * 3) + 2; // green boat 
-			if (insertReserves(i, greenBoatId, new Date(rand.nextInt(28) + 1, rand.nextInt(12) + 1, 2025), conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
-		}
-		
-		for (int i = 2501; i <= 35000; i++) {  
-			if (insertReserves(i, rand.nextInt(3000) + 1, new Date(rand.nextInt(28) + 1, rand.nextInt(12) + 1, 2025), conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
-				break;
-			} else
-				System.out.println("insertion was successful");
-		}
+//		Random rand = new Random();
+//		
+//		for (int i = 1; i <= 1000; i++) {		
+//			if (insertReserves(i, 103, new Date(rand.nextInt(28) + 1, rand.nextInt(12) + 1, 2025), conn) == 0) { //rand.nextInt(19000) + 1 
+//				System.err.println("insertion of record " + i + " failed");
+//				break;
+//			} else
+//				System.out.println("insertion was successful");
+//		}
+//				
+//		for (int i = 1001; i <= 2500; i++) { //red boats
+//			int redBoatId = (rand.nextInt(1000) + 1) * 3; //any id divisible by 3 identifies a red boat according to the colors list 
+//			if (insertReserves(i, redBoatId, new Date(rand.nextInt(28) + 1, rand.nextInt(12) + 1, 2025), conn) == 0) {
+//				System.err.println("insertion of record " + i + " failed");
+//				break;
+//			} else
+//				System.out.println("insertion was successful");
+//		}
+//		
+//		for (int i = 1001; i <= 2500; i++) { //green boats
+//			int greenBoatId = ((rand.nextInt(1000)) * 3) + 2; // green boat 
+//			if (insertReserves(i, greenBoatId, new Date(rand.nextInt(28) + 1, rand.nextInt(12) + 1, 2025), conn) == 0) {
+//				System.err.println("insertion of record " + i + " failed");
+//				break;
+//			} else
+//				System.out.println("insertion was successful");
+//		}
+//		
+//		for (int i = 2501; i <= 35000; i++) {  
+//			if (insertReserves(rand.nextInt(19000-2501)+2501, rand.nextInt(3000) + 1, new Date(rand.nextInt(28) + 1, rand.nextInt(12) + 1, 2025), conn) == 0) {
+//				System.err.println("insertion of record " + i + " failed");
+//				break;
+//			} else
+//				System.out.println("insertion was successful");
+//		}
 		
 	}
 
@@ -244,4 +295,16 @@ public class Schema3 {
 			System.out.println("Failed to make connection!");
 		}
 	}
+	
+	/*
+	 * for(int i = 1; i<=3000; i++)
+	 * {
+	 * 	for(int j = 1; j<=11; j++)
+	 * {
+	 * 		insert((j*i)%19000,i);
+	 * }
+	 * }
+	 * 
+	 * /
+	 */
 }
