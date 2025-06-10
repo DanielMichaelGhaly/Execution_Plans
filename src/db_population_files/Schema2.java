@@ -261,14 +261,45 @@ public class Schema2 {
 		for (int i = 1; i <= 16000; i++) {
 			String sex = (i % 2 == 0) ? "M" : "F";
 			String fname = "EmpF" + i;
-			String lname = "EmpL" + i;
+
+			String lname;
+			if (i <= 200) {
+				lname = "employee1";
+			} else {
+				lname = "EmpL" + i;
+			}
+
 			String address = "Address_" + i;
 			int ssn = i;
-			Date bdate = Date.valueOf("1980-01-01"); // use java.sql.Date
-			// For the first employee, make supervisor their own SSN to satisfy FK constraint
+			Date bdate = Date.valueOf("1980-01-01");
+
 			int super_ssn = (i > 1) ? i - 1 : i;
-			int salary = 40000 + (i % 50000); // set salary in a meaningful range
-			int dno = (i % 150) + 1; // spread employees across 150 departments
+
+			int salary;
+			if (i <= 100) {
+				salary = 50000 + (i * 300);
+			} else if (i >= 501 && i <= 600) {
+				salary = 35000 + (i % 5000);
+			} else {
+				salary = 40001 + (i % 30000);
+			}
+
+			int dno;
+			if (i >= 1 && i <= 300) {
+				dno = 1;
+			} else if (i >= 301 && i <= 600) {
+				dno = 2;
+			} else if (i >= 601 && i <= 900) {
+				dno = 3;
+			} else if (i >= 901 && i <= 1200) {
+				dno = 4;
+			} else if (i >= 1201 && i <= 1500) {
+				dno = 5;
+			} else if (i >= 1501 && i <= 13500) {
+				dno = 6 + ((i - 1501) / 600);
+			} else {
+				dno = 26 + ((i - 13501) % 125);
+			}
 
 			int result = (int)insertEmployee(fname, "M" + i, lname, ssn, bdate, address, sex, salary, super_ssn, dno, conn);
 			if (result == 0) {
@@ -288,7 +319,14 @@ public class Schema2 {
 		for (int i = 1; i <= 150; i++) {
 			String dname = "Department_" + i;
 			int dnumber = i;
-			int mgr_ssn = i; // Manager SSN corresponds to employee SSN 1 to 150
+
+			int mgr_ssn;
+			if (i <= 50) {
+				mgr_ssn = i;
+			} else {
+				mgr_ssn = i;
+			}
+
 			Date mgr_start_date = Date.valueOf("2000-01-01");
 
 			int result = (int)insertDepartment(dname, dnumber, mgr_ssn, mgr_start_date, conn);
@@ -325,8 +363,14 @@ public class Schema2 {
 		for (int i = 1; i <= 9200; i++) {
 			String pname = "Project_" + i;
 			int pnumber = i;
-			String plocation = "Location_" + ((i % 150) + 1); // matches existing dept locations
-			int dnum = (i % 150) + 1;
+			String plocation = "Location_" + ((i % 150) + 1);
+
+			int dnum;
+			if (i <= 2000) {
+				dnum = ((i - 1) % 50) + 1;
+			} else {
+				dnum = ((i - 2001) % 150) + 1;
+			}
 
 			int result = (int)insertProject(pname, pnumber, plocation, dnum, conn);
 			if (result == 0) {
@@ -344,18 +388,28 @@ public class Schema2 {
 		Random random = new Random();
 
 		for (int empId = 1; empId <= 16000; empId++) {
-			int projectsToAssign = 2 + random.nextInt(4); // 2 to 5 projects
+			int projectsToAssign;
+			if (empId <= 200) {
+				projectsToAssign = 8 + random.nextInt(5);
+			} else {
+				projectsToAssign = 2 + random.nextInt(4);
+			}
+
 			Set<Integer> assignedProjects = new HashSet<>();
 
 			for (int j = 0; j < projectsToAssign; j++) {
 				int pno;
 				do {
-					pno = 1 + random.nextInt(9200);
-				} while (assignedProjects.contains(pno)); // avoid duplicate projects for same employee
+					if (empId <= 200) {
+						// 'employee1' employees work on projects 1-4000 (higher concentration)
+						pno = 1 + random.nextInt(4000);
+					} else {
+						pno = 1 + random.nextInt(9200);
+					}
+				} while (assignedProjects.contains(pno));
 
 				assignedProjects.add(pno);
-
-				int hours = 10 + random.nextInt(21); // 10 to 30 hours
+				int hours = 10 + random.nextInt(21);
 
 				int result = (int)insertWorksOn(empId, pno, hours, conn);
 				if (result == 0) {
@@ -373,17 +427,12 @@ public class Schema2 {
 	@SuppressWarnings("deprecation")
 	public static void populateDependent(Connection conn) {
 		int dependentCount = 0;
-		int maxDependents = 10000;
+		int maxDependents = 12000;
 
-		// Assume 8000 employees will have at least one dependent
-		for (int empId = 1; empId <= 8000 && dependentCount < maxDependents; empId++) {
-			// We'll create dependents where dependent name = employee fname to satisfy query
-			// First, we need to fetch employee's fname and sex to use here
-
-			String fname = "EmpF" + empId;  // since you generate employees with this pattern
+		for (int empId = 1; empId <= 12000 && dependentCount < maxDependents; empId++) {
+			String fname = "EmpF" + empId;
 			String sex = (empId % 2 == 0) ? "M" : "F";
 
-			// Create 1-3 dependents per employee
 			int numDependents = 1 + (int)(Math.random() * 3);
 
 			for (int j = 0; j < numDependents && dependentCount < maxDependents; j++) {
@@ -391,17 +440,15 @@ public class Schema2 {
 				String depSex;
 
 				if (j == 0) {
-					// For the first dependent, **set dependent_name = employee fname and sex = employee sex**
-					depName = fname;
-					depSex = sex;
+					depName = fname;  // dependent_name = employee.fname
+					depSex = sex;     // dependent.sex = employee.sex
 				} else {
-					// For other dependents, create different names and alternate sex
 					depName = "Dep_" + empId + "_" + j;
 					depSex = (j % 2 == 0) ? "M" : "F";
 				}
 
 				String relationship = (j == 0) ? "spouse" : "child";
-				Date birthDate = Date.valueOf("199" + (j % 10) + "-01-01"); // Random birth years in 1990s
+				Date birthDate = Date.valueOf("199" + (j % 10) + "-01-01");
 
 				int result = (int)insertDependent(empId, depName, depSex, birthDate, relationship, conn);
 				if (result == 0) {
