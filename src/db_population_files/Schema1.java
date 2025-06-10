@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
-import java.util.Random;
+import java.util.*;
 
 //60 departments -> each with 20-40 courses and 10-35 instructors and at least 1100 students
 
@@ -20,24 +20,26 @@ public class Schema1 {
 	private static String password;
 
 	private static String[] department_Names = {"MET", "IET", "MECHATRONICS", "CIVIL",  "IT", "BIO", "CHEM", "PHYSICS", "MATH",
-			"Accounting", "Aerospace Engineering", "Agricultural Science", "Anthropology", "Architecture",
-			"Art and Design", "Astronomy", "Biochemistry", "Biomedical Engineering",
-			"Business Administration", "Chemical Engineering", "Classics", "Criminal Justice", "Data Science",
+			"Accounting", "Aerospace", "Agriculture", "Anthropology", "Architecture",
+			"Art&Design", "Astronomy", "Biochemistry", "Biomedical",
+			"BI", "ChemicalEng", "Classics", "Criminal", "Data Science",
 			"Dentistry", "Design Studies", "Economics", "Education",
-			"Emergency Management", "English", "Environmental Science", "Ethnic Studies", "Fashion Design",
-			"Finance", "Food Science", "Forensic Science", "Geography", "Geology",
-			"Graphic Design", "Health Sciences", "History", "Hospitality Management", "Human Resources",
-			"Industrial Design", "Information Technology", "International Relations", "Journalism", "Law",
-			"Linguistics", "Management", "Marketing", "Materials Science",
-			"Mechanical Engineering", "Medicine", "Music", "Nursing", "Philosophy",
-		    "Political Science", "Psychology", "Public Administration", "Sociology"};
+			"Emergency", "English", "Environmental", "Ethnics", "Fashion Design",
+			"Finance", "Food Science", "Forensics", "Geography", "Geology",
+			"Graphics", "Health", "History", "Hospitality", "HR",
+			"Industrial", "IN", "IR", "Journalism", "Law",
+			"Linguistics", "Management", "Marketing", "Materials",
+			"MechanicalEng", "Medicine", "Music", "Nursing", "Philosophy",
+		    "Politics", "Psychology", "Administration", "Sociology"};
 
-	private static String[] instructor_Names = {"Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Hannah",
-			"Ian", "Jack", "Kathy", "Liam", "Mia", "Noah", "Olivia", "Paul",
-			"Quinn", "Rachel", "Sam", "Tina", "Uma", "Vera", "Will", "Xena",
+	private static String[] instructor_Names = {"Ali", "Bob", "Ben","Dan", "Eve", "Frank", "Grace", "Hana",
+			"Ian", "Jack", "Kathy", "Liam", "Mia", "Mo", "Eren", "Paul",
+			"Mohy", "Jana", "Sam", "Tina", "Uma", "Vera", "Will", "Xena",
 			"Yara", "Zane"};
 
 	private static Random rand = new Random();
+
+	private static List<Integer> specialSectionIds = new ArrayList<>();
 
 	// //////////////////////////////////////////// Table Insertion Methods
 	// ///////////////////////////////////////////////////////////////
@@ -441,7 +443,7 @@ public class Schema1 {
 		{
 			for(int j = 1; j<=rand.nextInt(26)+10; j++)
 			{
-				if(insertInstructor(id++,instructor_Names[rand.nextInt(26)]+instructor_Names[rand.nextInt(26)], rand.nextInt(10000),department_Names[i-1],conn)==0)
+				if(insertInstructor(id++,instructor_Names[rand.nextInt(26)]+ " " + instructor_Names[rand.nextInt(26)], rand.nextInt(10000),department_Names[i-1],conn)==0)
 				{
 					System.err.println("insertion of record " + i + " failed");
 					break;
@@ -488,14 +490,15 @@ public class Schema1 {
 		{
 			for(int j = 1; j<=rand.nextInt(2000)+1100; j++)
 			{
-				String student_Name = instructor_Names[rand.nextInt(26)]+instructor_Names[rand.nextInt(26)];
-				if(insertStudent(id++, student_Name , rand.nextInt(100)+30, department_Names[i-1], rand.nextInt(700)+1, conn)==0)
+				String student_Name = instructor_Names[rand.nextInt(26)]+ " " + instructor_Names[rand.nextInt(26)];
+				if(insertStudent(id, student_Name , rand.nextInt(100)+30, department_Names[i-1], rand.nextInt(700)+1, conn)==0)
 				{
 					System.err.println("insertion of record " + i + " failed");
 					break;
 				}
-				else{
+				else {
 					System.out.println("insertion was successful");
+					id++;
 				}
 			}
 		}
@@ -514,13 +517,14 @@ public class Schema1 {
 		{
 			for(int j = 1; j<=rand.nextInt(26)+20; j++)
 			{
-				if(insertCourse(id++,department_Names[i-1]+" Course " + j, rand.nextInt(8)+1,department_Names[i-1],conn)==0)
+				if(insertCourse(id,department_Names[i-1]+"Kurs" + j, rand.nextInt(8)+1,department_Names[i-1],conn)==0)
 				{
 					System.err.println("insertion of record " + i + " failed");
 					break;
 				}
 				else{
 					System.out.println("insertion was successful");
+					id++;
 				}
 			}
 		}
@@ -545,23 +549,68 @@ public class Schema1 {
 	}
 
 	public static void populateSection(Connection conn) {
+		Set<String> uniqueSections = new HashSet<>(); // Store unique combinations
 		int j = 1;
+
 		for (int i = 1; i < 10000; i++) {
-			if (insertSection(i, i, 2019, i, i, j, j, conn) == 0) {
-				System.err.println("insertion of record " + i + " failed");
+			int semester = (i%10==0) ? 5 : rand.nextInt(10) + 1;
+			int year = (i%20==0) ? 2025 : rand.nextInt(26) + 2000;
+			int instructorId = rand.nextInt(700) + 1;
+			int courseId = rand.nextInt(1300) + 1;
+			int building = j;
+			int roomNo = j;
+
+			// Create a unique key for the combination
+			String key = instructorId + "-" + year + "-" + building + "-" + roomNo;
+
+			// Check if the combination already exists
+			if (uniqueSections.contains(key)) {
+				System.err.println("Duplicate section detected, skipping insertion for record " + i);
+				continue; // Skip insertion if duplicate is found
+			}
+
+			// Insert the section if no duplicate is found
+			if (insertSection(i, semester, year, instructorId, courseId, building, roomNo, conn) == 0) {
+				System.err.println("Insertion of record " + i + " failed");
 				break;
-			} else
-				System.out.println("insertion was successful");
+			} else {
+				System.out.println("Insertion was successful");
+				uniqueSections.add(key); // Add the key to the set after successful insertion
+				if(semester ==5 && year == 2025) {
+					specialSectionIds.add(i); // Store special section IDs
+				}
+			}
 			j++;
 		}
 	}
+//	public static void populateSection(Connection conn) {
+//		int j = 1;
+//		for (int i = 1; i < 10000; i++) {
+//			if (insertSection(i, rand.nextInt(10)+1, rand.nextInt(26)+2000, rand.nextInt(700)+1, rand.nextInt(1300)+1, j, j, conn) == 0) {
+//				System.err.println("insertion of record " + i + " failed");
+//				break;
+//			} else
+//				System.out.println("insertion was successful");
+//			j++;
+//		}
+//	}
 
 	public static void populateTakes(Connection conn) {
 		double j = 0.7;
-		for (int i = 1; i < 10000; i++) {
+		int specialIndex = 0;
+		for (int i = 1; i <= 5000; i++) {
+			int sectionId;
+
+			if (i % 10 == 0 && !Schema1.specialSectionIds.isEmpty()) {
+				sectionId = Schema1.specialSectionIds.get(specialIndex);
+				specialIndex = (specialIndex + 1) % Schema1.specialSectionIds.size();
+			} else {
+				sectionId = i;
+			}
+
 			if (j == 5)
 				j = 0.7;
-			if (insertTakes(i, i, j, conn) == 0) {
+			if (insertTakes(i, sectionId, j, conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
