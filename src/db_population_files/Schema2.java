@@ -432,7 +432,7 @@ public class Schema2 {
 		port_Number = 5432;
 		db_Name = "schema2";
 		username = "postgres";
-		password = "postgreSQL2025";
+		password = "usersql3";
 
 		System.out.println("-------- PostgreSQL " + "JDBC Connection Testing ------------");
 
@@ -454,7 +454,7 @@ public class Schema2 {
 
 		try {
 			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname + ":" + port_Number + "/" + db_Name, username, password);
-//			insertSchema2(connection);
+			insertSchema2(connection);
 
 		} catch (SQLException e) {
 
