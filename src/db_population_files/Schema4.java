@@ -11,14 +11,8 @@ import java.sql.Statement;
 public class Schema4 {
 //	CREATE TABLE Movie(mov_id INT PRIMARY KEY, mov_title CHAR(50), mov_year INT, mov_time INT, mov_lang CHAR(50), mov_dt_rel date, mov_rel_country CHAR(5));
 
-	private static String hostname;
-	private static int port_Number;
-	private static String db_Name;
-	private static String username;
-	private static String password;
-
 	public static long insertMovie(int ID, String title, int year, int time, String lang, Date releaseDate,
-			String movieCountry, Connection conn) {
+								   String movieCountry, Connection conn) {
 		String SQL = "INSERT INTO Movie(mov_id,mov_title,mov_year,mov_time,mov_lang,mov_dt_rel,mov_rel_country) "
 				+ "VALUES(?,?,?,?,?,?,?);";
 
@@ -96,7 +90,7 @@ public class Schema4 {
 		return id;
 	}
 
-//	 CREATE TABLE Genres(gen_id INT PRIMARY KEY, gen_title CHAR(20));
+	//	 CREATE TABLE Genres(gen_id INT PRIMARY KEY, gen_title CHAR(20));
 	public static long insertGenres(int ID, String title, Connection conn) {
 		String SQL = "INSERT INTO Genres(gen_id,gen_title) " + "VALUES(?,?);";
 
@@ -132,7 +126,7 @@ public class Schema4 {
 		return id;
 	}
 
-//	 CREATE TABLE Actor(act_id INT PRIMARY KEY, act_fname CHAR(20), act_lname CHAR(20), act_gender CHAR(1));
+	//	 CREATE TABLE Actor(act_id INT PRIMARY KEY, act_fname CHAR(20), act_lname CHAR(20), act_gender CHAR(1));
 	public static long insertActor(int ID, String fName, String lName, String gender, Connection conn) {
 		String SQL = "INSERT INTO Actor(act_id,act_fname,act_lname,act_gender) " + "VALUES(?,?,?,?);";
 
@@ -170,7 +164,7 @@ public class Schema4 {
 		return id;
 	}
 
-//	 CREATE TABLE Director(dir_id INT PRIMARY KEY, dir_fname CHAR(20), dir_lname CHAR(20));
+	//	 CREATE TABLE Director(dir_id INT PRIMARY KEY, dir_fname CHAR(20), dir_lname CHAR(20));
 	public static long insertDirector(int ID, String fName, String lName, Connection conn) {
 		String SQL = "INSERT INTO Director(dir_id,dir_fname,dir_lname) " + "VALUES(?,?,?);";
 
@@ -207,7 +201,7 @@ public class Schema4 {
 		return id;
 	}
 
-//	 CREATE TABLE movie_direction(dir_id INT REFERENCES Director, mov_id INT REFERENCES Movie, PRIMARY KEY(dir_id,mov_id));
+	//	 CREATE TABLE movie_direction(dir_id INT REFERENCES Director, mov_id INT REFERENCES Movie, PRIMARY KEY(dir_id,mov_id));
 	public static long insertMovieDirection(int ID, int movieID, Connection conn) {
 		String SQL = "INSERT INTO movie_direction(dir_id,mov_id) " + "VALUES(?,?);";
 
@@ -280,7 +274,7 @@ public class Schema4 {
 		return id;
 	}
 
-//	 CREATE TABLE movie_genres(mov_id INT REFERENCES Movie, gen_id INT REFERENCES genres, PRIMARY KEY(mov_id,gen_id));
+	//	 CREATE TABLE movie_genres(mov_id INT REFERENCES Movie, gen_id INT REFERENCES genres, PRIMARY KEY(mov_id,gen_id));
 	public static long insertMovieGenres(int movieID, int genreID, Connection conn) {
 		String SQL = "INSERT INTO movie_genres(mov_id,gen_id) " + "VALUES(?,?);";
 
@@ -316,7 +310,7 @@ public class Schema4 {
 		return id;
 	}
 
-//	 CREATE TABLE Rating(mov_id INT REFERENCES Movie, rev_id INT REFERENCES Reviewer, rev_stars INT, num_o_ratings INT, PRIMARY KEY(mov_id,rev_id));
+	//	 CREATE TABLE Rating(mov_id INT REFERENCES Movie, rev_id INT REFERENCES Reviewer, rev_stars INT, num_o_ratings INT, PRIMARY KEY(mov_id,rev_id));
 	public static long insertRating(int movieID, int reviewID, int stars, int rating, Connection conn) {
 		String SQL = "INSERT INTO Rating(mov_id,rev_id,rev_stars,num_o_ratings) " + "VALUES(?,?,?,?);";
 
@@ -359,9 +353,20 @@ public class Schema4 {
 	////////////////////////////////////////////////////////// //////////////////////////////////////////////////////////
 	@SuppressWarnings("deprecation")
 	public static void populateMovie(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
+		String s="";
+		for (int i = 1; i <=100000; i++) {
 
-			if (insertMovie(i, "Movie" + i, i, i, "EN", new Date(22, 1, 1999), "US", conn) == 0) {
+			if(i==1){
+				s="Toy Story";
+
+			}else if (i==2){
+				s="Titanic";
+
+			}else {
+				s="Movie" + i;
+			}
+
+			if (insertMovie(i,s, i, i, "EN", new Date(22, 1, 1999), "US", conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
@@ -392,7 +397,7 @@ public class Schema4 {
 	}
 
 	public static void populateActor(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
+		for (int i = 1; i <=120000; i++) {
 			String result = "M";
 			if (i > 5000)
 				result = "F";
@@ -405,9 +410,20 @@ public class Schema4 {
 	}
 
 	public static void populateDirector(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
+		for (int i = 1; i < 6001; i++) {
 
-			if (insertDirector(i, "Actor" + i, "Actor" + i, conn) == 0) {
+			String fn="";
+			String ln="";
+			if(i==1) {
+				fn = "Quentin";
+				ln = "Tarantino";
+			}
+			else{
+				fn = "Director" + i;
+				ln = "Director" + i;
+			}
+
+			if (insertDirector(i, fn, ln, conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
@@ -416,9 +432,15 @@ public class Schema4 {
 	}
 
 	public static void populateMovieDirection(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-
-			if (insertMovieDirection(i, i, conn) == 0) {
+		int dir = 0;
+		for (int i = 1; i < 100000; i++) {
+			if(i>=6001){
+				dir = 2;
+			}
+			else{
+				dir = i;
+			}
+			if (insertMovieDirection(dir, i, conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
@@ -427,9 +449,17 @@ public class Schema4 {
 	}
 
 	public static void populateMovieCast(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
+		int actor = 0;
+		for (int i = 1; i <=120000; i++) {
 
-			if (insertMovieCast(i, i, "Actor" + i, conn) == 0) {
+			if(i>100000){
+				actor = 2;
+			}
+			else{
+				actor= i;
+			}
+
+			if (insertMovieCast(i, actor, "Actor" + i, conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
@@ -438,9 +468,15 @@ public class Schema4 {
 	}
 
 	public static void populateMovieGenres(Connection conn) {
-		for (int i = 1; i < 10000; i++) {
-
-			if (insertMovieGenres(i, i, conn) == 0) {
+		int genre = 0;
+		for (int i = 1; i <= 100000; i++) {
+			if(i>9999){
+				genre = 2;
+			}
+			else{
+				genre = i;
+			}
+			if (insertMovieGenres(i,genre, conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
@@ -449,9 +485,17 @@ public class Schema4 {
 	}
 
 	public static void populateRating(Connection conn) {
+		int rev = 0;
 		for (int i = 1; i < 10000; i++) {
 
-			if (insertRating(i, i, i, i, conn) == 0) {
+			if(i>9999){
+				rev = 2;
+			}
+			else{
+				rev = i;
+			}
+
+			if (insertRating(i, rev, i, i, conn) == 0) {
 				System.err.println("insertion of record " + i + " failed");
 				break;
 			} else
@@ -473,12 +517,6 @@ public class Schema4 {
 
 	public static void main(String[] argv) {
 
-		hostname = "localhost";
-		port_Number = 5432;
-		db_Name = "schema4";
-		username = "postgres";
-		password = "usersql3";
-
 		System.out.println("-------- PostgreSQL " + "JDBC Connection Testing ------------");
 
 		try {
@@ -498,8 +536,8 @@ public class Schema4 {
 		Connection connection = null;
 
 		try {
-			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname + ":" + port_Number + "/" + db_Name, username, password);
-//			insertSchema4(connection);
+			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/schema4", "postgres", "usersql3");
+			insertSchema4(connection);
 
 		} catch (SQLException e) {
 
