@@ -279,7 +279,7 @@ public class Schema3 {
 
 		try {
 			connection = DriverManager.getConnection("jdbc:postgresql://" + hostname + ":" + port_Number + "/" + db_Name, username, password);
-//			insertSchema3(connection);
+			insertSchema3(connection);
 
 		} catch (SQLException e) {
 

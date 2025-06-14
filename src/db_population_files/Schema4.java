@@ -356,10 +356,10 @@ public class Schema4 {
 		String s="";
 		for (int i = 1; i <=100000; i++) {
 
-			if(i==1){
+			if(i<2000){
 				s="Toy Story";
 
-			}else if (i==2){
+			}else if (i>2000 & i<5000){
 				s="Titanic";
 
 			}else {
@@ -414,7 +414,7 @@ public class Schema4 {
 
 			String fn="";
 			String ln="";
-			if(i==1) {
+			if(i<3000) {
 				fn = "Quentin";
 				ln = "Tarantino";
 			}
